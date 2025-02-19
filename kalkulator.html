@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Budowlany</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: auto;
+        }
+        h2, h3 {
+            color: #333;
+        }
+        label, select, input, button {
+            display: block;
+            margin: 10px auto;
+            width: 80%;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        ul li {
+            background: #ddd;
+            margin: 5px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        #wynik {
+            font-weight: bold;
+            color: #d9534f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Kalkulator Budowlany</h2>
+        <label for="element">Wybierz element:</label>
+        <select id="element">
+            <option value="floor">Podłoga</option>
+            <option value="wall">Ściana</option>
+            <option value="window_wall">Ściana z oknem</option>
+            <option value="walkway">Chodnik</option>
+            <option value="thirdwall">Trzecia ściana</option>
+        </select>
+        
+        <label for="ilosc">Podaj ilość:</label>
+        <input type="number" id="ilosc" min="1" value="1">
+        
+        <button onclick="dodajElement()">Dodaj</button>
+        <button onclick="usunOstatniElement()">Cofnij</button>
+        <button onclick="obliczMaterialy()">Oblicz</button>
+        
+        <h3>Wybrane elementy:</h3>
+        <ul id="listaElementow"></ul>
+        
+        <h3>Wynik:</h3>
+        <p id="wynik"></p>
+    </div>
+    
+    <script>
+        const materialy = {
+            floor: { klody: 4, deski: 20, gwozdzie: 30 },
+            wall: { klody: 4, deski: 15, gwozdzie: 35 },
+            window_wall: { klody: 4, deski: 15, gwozdzie: 35 },
+            walkway: { klody: 2, deski: 10, gwozdzie: 15 },
+            thirdwall: { klody: 2, deski: 5, gwozdzie: 15 }
+        };
+        
+        let wybraneElementy = [];
+        
+        function dodajElement() {
+            const element = document.getElementById("element").value;
+            const ilosc = parseInt(document.getElementById("ilosc").value);
+            wybraneElementy.push({ element, ilosc });
+            
+            aktualizujListe();
+        }
+        
+        function usunOstatniElement() {
+            wybraneElementy.pop();
+            aktualizujListe();
+        }
+        
+        function aktualizujListe() {
+            const lista = document.getElementById("listaElementow");
+            lista.innerHTML = "";
+            wybraneElementy.forEach(({ element, ilosc }, index) => {
+                const li = document.createElement("li");
+                li.innerText = `${ilosc} x ${element}`;
+                lista.appendChild(li);
+            });
+        }
+        
+        function obliczMaterialy() {
+            let sumaKlody = 0, sumaDeski = 0, sumaGwozdzie = 0;
+            
+            wybraneElementy.forEach(({ element, ilosc }) => {
+                sumaKlody += materialy[element].klody * ilosc;
+                sumaDeski += materialy[element].deski * ilosc;
+                sumaGwozdzie += materialy[element].gwozdzie * ilosc;
+            });
+            
+            document.getElementById("wynik").innerText = `Kłody: ${sumaKlody}, Deski: ${sumaDeski}, Gwoździe: ${sumaGwozdzie}`;
+        }
+    </script>
+</body>
+</html>
